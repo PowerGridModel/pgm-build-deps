@@ -4,11 +4,11 @@ SPDX-FileCopyrightText: Contributors to the Power Grid Model project <powergridm
 SPDX-License-Identifier: MPL-2.0
 -->
 
-# pgm-build-dependencies
+# pgm-build-deps
 
 A proxy Python package to host all header-only libraries which are needed to build Power Grid Model.
 
-The GitHub Actions automatically fetches the latest versions of the header-only libraries and updates the `pgm-build-dependencies` package.
+The GitHub Actions automatically fetches the latest versions of the header-only libraries and updates the `pgm-build-deps` package.
 
 ## Installation and Usage
 
@@ -20,7 +20,7 @@ Given its limited applicability, we deliberately do not publish it to PyPI, but 
 ```toml
 [build-system]
 requires = [
-    "pgm-build-dependencies@https://github.com/PowerGridModel/pgm-build-dependencies/releases/latest/download/pgm_build_dependencies-0.1.0-py3-none-any.whl",
+    "pgm-build-deps@https://github.com/PowerGridModel/pgm-build-deps/releases/latest/download/pgm_build_deps-0.1.0-py3-none-any.whl",
 ]
 ```
 
@@ -33,9 +33,9 @@ In the build process, the entry point `cmake.root` will be installed into the bu
       - name: Install uv
         uses: astral-sh/setup-uv@v5
       
-      - name: Install pgm-build-dependencies
+      - name: Install pgm-build-deps
         run: |
-          uv tool install https://github.com/PowerGridModel/pgm-build-dependencies/releases/latest/download/pgm_build_dependencies-0.1.0-py3-none-any.whl
+          uv tool install https://github.com/PowerGridModel/pgm-build-deps/releases/latest/download/pgm_build_deps-0.1.0-py3-none-any.whl
           pgm-build-setup-ga-ci
 ```
 

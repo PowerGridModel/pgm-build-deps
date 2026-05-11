@@ -7,7 +7,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pgm-build-dependencies"
+name = "pgm-build-deps"
 version = "0.1.0"
 authors = [
     { name = "Contributors to the Power Grid Model project", email = "powergridmodel@lfenergy.org" },
@@ -30,16 +30,16 @@ dependencies = []
 requires-python = ">=3.11"
 
 [project.urls]
-GitHub = "https://github.com/PowerGridModel/pgm-build-dependencies"
+GitHub = "https://github.com/PowerGridModel/pgm-build-deps"
 
 [project.entry-points."cmake.root"]
-Boost = "pgm_build_dependencies.boost"
-Eigen3 = "pgm_build_dependencies.eigen"
-nlohmann_json = "pgm_build_dependencies.nlohmann_json"
-msgpack-cxx = "pgm_build_dependencies.msgpack_cxx"
-doctest = "pgm_build_dependencies.doctest"
-CLI11 = "pgm_build_dependencies.cli11"
+Boost = "pgm_build_deps.boost"
+Eigen3 = "pgm_build_deps.eigen"
+nlohmann_json = "pgm_build_deps.nlohmann_json"
+msgpack-cxx = "pgm_build_deps.msgpack_cxx"
+doctest = "pgm_build_deps.doctest"
+CLI11 = "pgm_build_deps.cli11"
 
 
 [project.scripts]
-pgm-build-setup-ga-ci = "pgm_build_dependencies.setup_ga_ci:setup_ga_ci"
+pgm-build-setup-ga-ci = "pgm_build_deps.setup_ga_ci:setup_ga_ci"
