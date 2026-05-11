@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Contributors to the Power Grid Model project <powergridmodel@lfenergy.org>
+#
+# SPDX-License-Identifier: MPL-2.0
+
+name: publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    name: "Publish to PyPI"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write # Required for Trusted Publishing
+    steps:
+      - name: Download assets from GitHub release
+        uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f # v1.13
+        with:
+          repository: ${{ github.repository }}
+          # download the latest release
+          latest: true
+          # don't download pre-releases
+          preRelease: false
+          fileName: "*.whl"
+          # don't download GitHub-generated source tar and zip files
+          tarBall: false
+          zipBall: false
+          # create a directory to store the downloaded assets
+          out-file-path: assets-to-publish
+          # don't extract downloaded files
+          extract: false
+
+      - name: List downloaded assets
+        run: ls -la assets-to-publish
+
+      - name: Upload assets to PyPI
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
+        with:
+          packages-dir: assets-to-publish
+          skip-existing: true
+          print-hash: true
+          verbose: true
