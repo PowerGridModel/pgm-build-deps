@@ -17,10 +17,9 @@ on:
   schedule:
     - cron: "0 2 * * 1" # Runs at 02:00 UTC every Monday
 
-# enable later
-#   push:
-#     branches:
-#       - main
+  push:
+    branches:
+      - main
 
   pull_request:
     branches:
@@ -92,6 +91,15 @@ jobs:
           uv build
           ls dist/
           echo "VERSION=v$(cat VERSION)" >> $GITHUB_ENV
+
+      - name: test in cmake
+        run: |
+          uv tool install dist/*.whl
+          pgm-build-setup-ga-ci
+          cd test_cmake
+          cmake -S . -B build
+          cmake --build build
+          ./build/test_cmake
 
       - name: publish
         if: ${{ inputs.force_publish || (github.event_name == 'schedule') }}
