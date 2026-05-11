@@ -10,12 +10,12 @@ find src/pgm_build_deps/eigen -mindepth 1 ! -name '.gitignore' -delete
 find src/pgm_build_deps/msgpack_cxx -mindepth 1 ! -name '.gitignore' -delete
 find src/pgm_build_deps/doctest -mindepth 1 ! -name '.gitignore' -delete
 find src/pgm_build_deps/cli11 -mindepth 1 ! -name '.gitignore' -delete
-cp -r $HOMEBREW_PREFIX/Cellar/nlohmann-json/*/* src/pgm_build_deps/nlohmann_json/
-cp -r $HOMEBREW_PREFIX/Cellar/boost/*/* src/pgm_build_deps/boost/
-cp -r $HOMEBREW_PREFIX/Cellar/eigen/*/* src/pgm_build_deps/eigen/
-cp -r $HOMEBREW_PREFIX/Cellar/msgpack-cxx/*/* src/pgm_build_deps/msgpack_cxx/
-cp -r $HOMEBREW_PREFIX/Cellar/doctest/*/* src/pgm_build_deps/doctest/
-cp -r $HOMEBREW_PREFIX/Cellar/cli11/*/* src/pgm_build_deps/cli11/
+cp -r $(brew --prefix)/Cellar/nlohmann-json/*/* src/pgm_build_deps/nlohmann_json/
+cp -r $(brew --prefix)/Cellar/boost/*/* src/pgm_build_deps/boost/
+cp -r $(brew --prefix)/Cellar/eigen/*/* src/pgm_build_deps/eigen/
+cp -r $(brew --prefix)/Cellar/msgpack-cxx/*/* src/pgm_build_deps/msgpack_cxx/
+cp -r $(brew --prefix)/Cellar/doctest/*/* src/pgm_build_deps/doctest/
+cp -r $(brew --prefix)/Cellar/cli11/*/* src/pgm_build_deps/cli11/
 find src/ \( -type f ! -exec grep -Iq . {} \; -o -type l \) -delete
 ls src/pgm_build_deps/nlohmann_json/
 ls src/pgm_build_deps/boost/
