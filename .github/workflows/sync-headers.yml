@@ -26,6 +26,9 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-main
+  cancel-in-progress: true
 
 jobs:
   sync-headers:
