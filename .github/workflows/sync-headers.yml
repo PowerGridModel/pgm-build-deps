@@ -87,7 +87,7 @@ jobs:
           
       - name: build wheel
         run: |
-          echo "v$(date +'%Y.%m.%d').$GITHUB_RUN_NUMBER" > VERSION
+          echo "$(date +'%Y.%m.%d').$GITHUB_RUN_NUMBER" > VERSION
           uv build
           ls dist/
           echo "VERSION=v$(cat VERSION)" >> $GITHUB_ENV
