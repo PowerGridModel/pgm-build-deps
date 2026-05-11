@@ -124,11 +124,15 @@ jobs:
           name: license-scan-results
           path: results/
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+          
       - name: build wheel
         run: |
-          python -m build --wheel --outdir dist
+          echo "v$(date +'%Y.%m.%d').$GITHUB_RUN_NUMBER" > VERSION
+          uv build
           ls dist/
-          echo "VERSION=v$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+          echo "VERSION=v$(cat VERSION)" >> $GITHUB_ENV
 
       - name: publish
         if: ${{ inputs.force_publish || (github.event_name == 'schedule') }}
