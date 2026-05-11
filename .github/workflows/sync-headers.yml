@@ -1,0 +1,142 @@
+# SPDX-FileCopyrightText: Contributors to the Power Grid Model project <powergridmodel@lfenergy.org>
+#
+# SPDX-License-Identifier: MPL-2.0
+
+
+name: Sync headers from upstream repository (brew)
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_publish:
+        description: 'Force publish the headers'
+        required: false
+        default: false
+        type: boolean
+
+  schedule:
+    - cron: "0 2 * * 1" # Runs at 02:00 UTC every Monday
+
+# enable later
+#   push:
+#     branches:
+#       - main
+
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+  sync-headers:
+    name: "Sync headers from upstream repository (brew)"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: generate GitHub App token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        id: generate-token
+        with:
+          app-id: ${{ secrets.CI_BOT_APP_ID }}
+          private-key: ${{ secrets.CI_BOT_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+      
+      - name: Enable brew
+        run: echo "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
+
+      - name: Install brew
+        run: |
+           brew update
+           brew install nlohmann-json boost eigen msgpack-cxx doctest cli11 cmake
+
+      - name: copy headers
+        run: |
+          ./sync-headers.sh
+
+      - name: License scan - entire repository
+        uses: fossology/fossology-action@77ce100b60db6a92aa122c9103908dda44a06514 # v1
+        continue-on-error: true
+        with:
+            scan_mode: repo
+            scanners: 'nomos ojo'
+            report_format: 'SPDX_JSON'
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Remove files with non-accepted license
+        id: license-cleanup
+        run: |          
+          # Find the SPDX JSON file
+          SPDX_FILE=$(find . -name "*spdx*.json" -o -name "sbom*.json" -o -name "*sbom.json"| head -1)
+          
+          if [ -z "$SPDX_FILE" ]; then
+            echo "No SPDX JSON file found! Fossology scan may have failed."
+            echo "Available files:"
+            find . -name "*.json" || echo "No JSON files found"
+            exit 1
+          fi
+          echo "Found SPDX file: $SPDX_FILE"
+          
+          # Get badly licensed files (excluding .git and .github directories)
+          echo "Extracting and deduplicating badly licensed files..."
+          BAD_FILES=$(jq -r '
+            [.files[] | 
+             select(.licenseInfoInFiles[]? | type == "string" and test("GPL"; "i")) | 
+             select(.fileName | test("^\\.git/") | not) |
+             select(.fileName | test("^\\.github/") | not) |
+             .fileName] | 
+            unique | 
+            .[]
+          ' "$SPDX_FILE")
+          
+          if [ -z "$BAD_FILES" ]; then
+            echo "No badly licensed files found - nothing to delete!"
+          else
+            echo "Badly licensed files found:"
+            echo "$BAD_FILES" | while read -r file_name; do
+              if [ -n "$file_name" ]; then
+                echo " - $file_name"
+                
+                if [ -f "$file_name" ]; then
+                  rm -f "$file_name"
+                  echo "Deleted: $file_name"
+                else
+                  echo "File not found: $file_name"
+                  exit 1
+                fi
+              fi
+            done
+          fi
+
+      - name: License cleanup completed
+        run: echo "License cleanup completed successfully"
+
+      - name: Upload Scan Results Artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: license-scan-results
+          path: results/
+
+      - name: build wheel
+        run: |
+          python -m build --wheel --outdir dist
+          ls dist/
+          echo "VERSION=v$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+
+      - name: publish
+        if: ${{ inputs.force_publish || (github.event_name == 'schedule') }}
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+        with:
+          tag_name: ${{ env.VERSION }}
+          files: dist/*.whl
+          draft: false
+          prerelease: false
+          target_commitish: ${{ github.sha }}
+          token: ${{ steps.generate-token.outputs.token }}
