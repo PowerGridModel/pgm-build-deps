@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pgm-build-deps"
-version = "0.1.0"
+dynamic = ["version"]
 authors = [
     { name = "Contributors to the Power Grid Model project", email = "powergridmodel@lfenergy.org" },
 ]
@@ -43,3 +43,7 @@ CLI11 = "pgm_build_deps.cli11"
 
 [project.scripts]
 pgm-build-setup-ga-ci = "pgm_build_deps.setup_ga_ci:setup_ga_ci"
+
+[tool.hatch.version]
+path = "VERSION"
+pattern = "^\\s*(?P<version>[^\\s]+)\\s*$"
