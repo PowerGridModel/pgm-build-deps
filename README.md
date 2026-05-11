@@ -13,14 +13,13 @@ The GitHub Actions automatically fetches the latest versions of the header-only 
 ## Installation and Usage
 
 This package should be part of build dependencies of the Power Grid Model project.
-Given its limited applicability, we deliberately do not publish it to PyPI, but instead use a GitHub release artifact to store the wheel file.
 
 ### As build dependency for Python
 
 ```toml
 [build-system]
 requires = [
-    "pgm-build-deps@https://github.com/PowerGridModel/pgm-build-deps/releases/latest/download/pgm_build_deps-0.1.0-py3-none-any.whl",
+    "pgm-build-deps"
 ]
 ```
 
@@ -35,7 +34,7 @@ In the build process, the entry point `cmake.root` will be installed into the bu
       
       - name: Install pgm-build-deps
         run: |
-          uv tool install https://github.com/PowerGridModel/pgm-build-deps/releases/latest/download/pgm_build_deps-0.1.0-py3-none-any.whl
+          uv tool install pgm-build-deps
           pgm-build-setup-ga-ci
 ```
 
