@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Contributors to the Power Grid Model project <powergridmodel@lfenergy.org>
+#
+# SPDX-License-Identifier: MPL-2.0
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pgm-build-dependencies"
+version = "0.1.0"
+authors = [
+    { name = "Contributors to the Power Grid Model project", email = "powergridmodel@lfenergy.org" },
+]
+description = "Repackaging of all the header-only libraries to build Power Grid Model."
+readme = "README.md"
+license = "MPL-2.0"
+license-files = ["LICENSE", "LICENSES/*"]
+classifiers = [
+    "Programming Language :: C++",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Topic :: File Formats",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = []
+requires-python = ">=3.11"
+
+[project.urls]
+GitHub = "https://github.com/PowerGridModel/pgm-build-dependencies"
+
+[project.entry-points."cmake.root"]
+Boost = "pgm_build_dependencies.boost"
+Eigen3 = "pgm_build_dependencies.eigen"
+nlohmann_json = "pgm_build_dependencies.nlohmann_json"
+msgpack-cxx = "pgm_build_dependencies.msgpack_cxx"
+doctest = "pgm_build_dependencies.doctest"
+CLI11 = "pgm_build_dependencies.cli11"
+
+
+[project.scripts]
+pgm-build-setup-ga-ci = "pgm_build_dependencies.setup_ga_ci:setup_ga_ci"
