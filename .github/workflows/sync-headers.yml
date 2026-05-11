@@ -135,7 +135,9 @@ jobs:
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         with:
           tag_name: ${{ env.VERSION }}
-          files: dist/*.whl
+          files: |
+            dist/*.whl
+            results/*
           draft: false
           prerelease: false
           target_commitish: ${{ github.sha }}
