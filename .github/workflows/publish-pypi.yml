@@ -13,8 +13,8 @@ jobs:
     name: "Publish to PyPI"
     runs-on: ubuntu-latest
     permissions:
-      contents: write
       id-token: write # Required for Trusted Publishing
+    environment: release
     steps:
       - name: Download assets from GitHub release
         uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f # v1.13
