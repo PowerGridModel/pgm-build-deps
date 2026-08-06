@@ -16,6 +16,12 @@ def get_cmake_paths():
     return paths
 
 
+def setup_local_prefix_paths():
+    """Setup local prefix paths for CMake."""
+    paths = get_cmake_paths()
+    print(os.pathsep.join(paths.values()), end="")
+
+
 def setup_ga_ci():
     """Setup CI environment for GitHub Actions"""
     paths = get_cmake_paths()
