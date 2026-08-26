@@ -42,7 +42,9 @@ CLI11 = "pgm_build_deps.cli11"
 
 
 [project.scripts]
-pgm-build-setup-ga-ci = "pgm_build_deps.setup_ga_ci:setup_ga_ci"
+pgm-build-setup-ga-ci = "pgm_build_deps.setup_paths:setup_ga_ci"
+pgm-build-setup-local-prefix = "pgm_build_deps.setup_paths:setup_local_prefix_paths"
+
 
 [tool.hatch.version]
 path = "VERSION"
