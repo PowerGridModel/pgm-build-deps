@@ -25,7 +25,38 @@ requires = [
 
 In the build process, the entry point `cmake.root` will be installed into the build environment. The build backend, e.g., [`scikit-build-core`](https://github.com/scikit-build/scikit-build-core), can retrieve the `cmake` search paths and use them when invoking `cmake`.
 
-### Load into CI for C++ build
+### Load into your local environment for the C++ build
+
+#### Windows (PowerShell)
+
+```ps1
+uv tool install pgm-build-deps
+$env:CMAKE_PREFIX_PATH = (pgm-build-setup-local-prefix)
+
+# only if you want it to persist across sessions
+[Environment]::SetEnvironmentVariable("CMAKE_PREFIX_PATH", $env:CMAKE_PREFIX_PATH, "User")
+```
+
+This replaces `CMAKE_PREFIX_PATH` in the current window.
+The last command saves it for your Windows user; restart your editor to pick it up.
+
+#### Unix-like systems (Bash, Zsh, or another POSIX-compatible shell)
+
+```sh
+uv tool install pgm-build-deps
+export CMAKE_PREFIX_PATH="$(pgm-build-setup-local-prefix)"
+
+# only if you want it to persist across sessions; use .bash_profile, .zprofile or equivalent for other shells
+cat >> "$HOME/.profile" <<'EOF'
+export CMAKE_PREFIX_PATH="$(pgm-build-setup-local-prefix)"
+EOF
+```
+
+This replaces `CMAKE_PREFIX_PATH` in the current shell.
+The heredoc appends the export command to `~/.profile` for future login shells.
+On Linux, launch your editor from this shell (e.g., `code .`) so extensions inherit the variable.
+
+### Load into CI for the C++ build
 
 ```yaml
     steps:
